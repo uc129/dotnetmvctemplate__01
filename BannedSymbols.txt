@@ -1,0 +1,32 @@
+# Compile-time standards. Each line bans an API; the text after ';' is the error message.
+# A deliberate exception needs: #pragma warning disable RS0030 // <reason>
+
+# --- Time: business code asks an injected clock, so tests can control "today". ---
+P:System.DateTime.Now;Inject TimeProvider or BusinessClock.
+P:System.DateTime.UtcNow;Inject TimeProvider or BusinessClock.
+P:System.DateTime.Today;Use BusinessClock.Today.
+P:System.DateTimeOffset.Now;Inject TimeProvider.
+P:System.DateTimeOffset.UtcNow;Inject TimeProvider.
+
+# --- Dates: one format (dd-MMM-yyyy), parsed and formatted only in DateFormat. ---
+M:System.DateTime.Parse(System.String);Use DateFormat.TryParseDate. Culture-dependent parsing reads 03/04 differently on different servers.
+M:System.DateTime.Parse(System.String,System.IFormatProvider);Use DateFormat.TryParseDate.
+M:System.DateTime.TryParse(System.String,System.DateTime@);Use DateFormat.TryParseDate.
+M:System.DateOnly.Parse(System.String);Use DateFormat.TryParseDate.
+M:System.DateOnly.TryParse(System.String,System.DateOnly@);Use DateFormat.TryParseDate.
+M:System.DateTime.ToString;Use DateFormat.ToDisplay.
+M:System.DateTime.ToString(System.String);Use DateFormat.ToDisplay.
+M:System.DateTime.ToShortDateString;Use DateFormat.ToDisplay.
+M:System.DateTime.ToLongDateString;Use DateFormat.ToDisplay.
+M:System.DateOnly.ToString;Use DateFormat.ToDisplay.
+M:System.DateOnly.ToString(System.String);Use DateFormat.ToDisplay.
+M:System.DateOnly.ToShortDateString;Use DateFormat.ToDisplay.
+M:System.DateOnly.ToLongDateString;Use DateFormat.ToDisplay.
+
+# --- Data access: stored procedures only, through DapperContext. ---
+T:Dapper.SqlMapper;Call stored procedures through DapperContext. Direct Dapper calls allow inline SQL.
+M:Microsoft.Data.SqlClient.SqlConnection.#ctor(System.String);Connections are created only by DapperContext.
+M:Microsoft.Data.SqlClient.SqlCommand.#ctor(System.String,Microsoft.Data.SqlClient.SqlConnection);No inline SQL. Add a stored procedure.
+
+# --- Logging ---
+M:System.Console.WriteLine(System.String);Use ILogger<T>.
