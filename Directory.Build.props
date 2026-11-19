@@ -1,0 +1,35 @@
+<Project>
+  <!--
+    Applies to every project under this folder. This is where solution-wide standards live,
+    so a project file only says what is different about that project.
+  -->
+  <PropertyGroup>
+    <!-- A warning is a defect you have not fixed yet. The build fails on any of them (C# and SQL). -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!-- C# projects only. The SQL project (.sqlproj) has its own SDK and target. -->
+  <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+
+    <!-- Runs the .editorconfig style rules during dotnet build, not only in the IDE. -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>Default</AnalysisMode>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- CS1591/CS1573: missing XML comments. Comments are written where they explain why, not on every member. -->
+    <NoWarn>$(NoWarn);CS1591;CS1573</NoWarn>
+  </PropertyGroup>
+
+  <!--
+    Banned APIs (BannedSymbols.txt) are compile errors, so the date and data-access standards
+    cannot be broken by accident. A deliberate exception needs a #pragma with a reason.
+  -->
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+    <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.txt" />
+  </ItemGroup>
+</Project>

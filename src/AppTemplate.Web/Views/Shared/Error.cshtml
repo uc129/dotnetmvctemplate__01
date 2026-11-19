@@ -1,0 +1,8 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+<h1 class="h3">@Model.Message</h1>
+<p>If this keeps happening, contact support and quote this reference:</p>
+<p><code>@Model.Reference</code></p>
+<a asp-controller="Home" asp-action="Index">Back to the start page</a>

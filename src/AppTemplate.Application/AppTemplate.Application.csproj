@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Use cases and the interfaces Infrastructure implements. Knows nothing about SQL or HTTP. -->
+  <ItemGroup>
+    <ProjectReference Include="..\AppTemplate.Domain\AppTemplate.Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+  </ItemGroup>
+</Project>

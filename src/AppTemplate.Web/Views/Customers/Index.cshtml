@@ -1,0 +1,40 @@
+@{
+    ViewData["Title"] = "Customers";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Customers</h1>
+    <a class="btn btn-primary" asp-action="Create">New customer</a>
+</div>
+
+<table id="customers" class="table table-striped table-hover w-100">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Customer since</th>
+            <th>Active</th>
+            <th></th>
+        </tr>
+    </thead>
+</table>
+
+@section Scripts {
+    <script>
+        // Columns name the JSON properties. "data" is also the sort column sent to the procedure.
+        // Dates arrive already formatted (dd-MMM-yyyy): no date formatting in JavaScript.
+        app.dataTable('#customers', '@Url.Action(nameof(CustomersController.List))', [
+            { data: 'name' },
+            { data: 'email' },
+            { data: 'phone', orderable: false },
+            { data: 'customerSince' },
+            { data: 'isActive', render: function (v) { return v ? 'Yes' : 'No'; } },
+            {
+                data: 'customerId', orderable: false, searchable: false,
+                render: function (id) {
+                    return '<a href="@Url.Action(nameof(CustomersController.Edit))/' + encodeURIComponent(id) + '">Edit</a>';
+                }
+            }
+        ], { order: [[0, 'asc']] });
+    </script>
+}

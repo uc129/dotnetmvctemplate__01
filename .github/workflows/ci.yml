@@ -1,0 +1,22 @@
+name: CI
+
+# Every push and pull request runs the whole standard: build (warnings are errors, banned APIs,
+# code style, SQL project validation), unit tests, architecture tests, integration tests
+# against SQL Server in Docker. A red build is how the standards are enforced for the team.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - run: dotnet restore AppTemplate.sln
+      - run: dotnet build AppTemplate.sln --no-restore -c Release
+      - run: dotnet test --solution AppTemplate.sln --no-build -c Release
